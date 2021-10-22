@@ -1,5 +1,5 @@
 ==============================================
-1. select count(*) from mb_auction where (extract(DAY from (enddate -startdate)) > 10)
+1. select count(*) from mb_auction where (extract(DAY from (enddate -startdate)) < 10)
    count|
 -----+
     3|
