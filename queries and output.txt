@@ -1,0 +1,56 @@
+==============================================
+1. select count(*) from mb_auction where (extract(DAY from (enddate -startdate)) > 10)
+   count|
+-----+
+    3|
+
+2. QUERY
+    select mi.description, enddate, reserve from mumbay.mb_auction inner join mumbay.mb_item mi on mb_auction.itemid = mi.itemid
+    where enddate < '2011-02-20'::timestamp;
+
+RESULT
+description                     |enddate                |reserve|
+--------------------------------+-----------------------+-------+
+Donkey Kong                     |2011-01-05 23:59:00.000|    500|
+Donkey Kong                     |2011-01-10 23:59:00.000|    400|
+Donkey Kong                     |2011-01-15 23:59:00.000|    300|
+Donkey Kong                     |2011-01-20 23:59:00.000|    200|
+Georgian Dresser                |2011-01-12 23:59:00.000|   7500|
+Socks                           |2011-01-15 23:59:00.000|    200|
+Penny Farthing Bicycle          |2011-01-20 23:59:00.000|    500|
+Penny Farthing Bicycle          |2011-01-30 23:59:00.000|    450|
+Aston Martin (light kerb damage)|2011-01-03 23:59:00.000|  10000|
+Aston Martin (light kerb damage)|2011-01-08 23:59:00.000|   9950|
+
+3. select name from mumbay.mb_user where userid in (select distinct bidder from mumbay.mb_bid where auctionid in (
+        select distinct userid from mumbay.mb_auction     ));
+
+RESULT
+name                |
+--------------------+
+George Foreman      |
+Dave Mal One        |
+Carrie Oakey        |
+George "Red" Foreman|
+Henrietta Smythe    |
+
+4.
+
+
+
+5. select mb.auctionid , max(amount) as amount from mb_bid mb group by mb.auctionid
+having auctionid in (select auctionid from mb_auction where status = 'sold')
+
+RESULT
+auctionid|amount|
+---------+------+
+        4|   371|
+       10|   475|
+        8|   250|
+        7|  8001|
+
+
+6. select au.auctionid, au.enddate, mi.description,
+       coalesce(us.name, '==') from mb_auction au
+inner join mb_item mi on au.itemid = mi.itemid
+inner join mb_user us on au.userid = us.userid
